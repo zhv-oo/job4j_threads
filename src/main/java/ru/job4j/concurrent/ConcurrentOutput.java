@@ -1,7 +1,7 @@
 package ru.job4j.concurrent;
 
 /**
- * Проверка вывода имени нитей и их последовательности.
+ * Проверка вывода имени нитей и их последовательности.g
  */
 public class ConcurrentOutput {
     public static void main(String[] args) {
