@@ -1,5 +1,6 @@
 package ru.job4j.thread;
 
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,16 +31,16 @@ public class Wget implements Runnable {
              FileOutputStream fileOutputStream = new FileOutputStream("loadedFile")) {
             byte[] dataBuffer = new byte[speed];
             int bytesRead;
-
-            List<Character> process = List.of('\\', '|', '/');
-            int pos = 0;
+            int sec = 1;
+            int time = 0;
             while ((bytesRead = load.read(dataBuffer, 0, speed)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
                 try {
-                    Thread.sleep(8);
-                    System.out.print("\r load: " + process.get(pos++));
-                    if (pos == process.size()) {
-                        pos = 0;
+                    Thread.sleep(9);
+                    time += 9;
+                    if (time >= 1000) {
+                        System.out.print("\r Loading: " + sec++ + " sec");
+                        time = 0;
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -54,8 +55,8 @@ public class Wget implements Runnable {
         String url = args[0];
         int speed = Integer.parseInt(args[1]);
         Thread wget = new Thread(new Wget(url, speed));
-        System.out.println(url);
-        System.out.println(speed);
+        System.out.println("URL: " + url);
+        System.out.println("SPEED: " + speed);
         wget.start();
         wget.join();
     }
