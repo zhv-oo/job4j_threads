@@ -25,19 +25,28 @@ public class Wget implements Runnable {
 
     @Override
     public void run() {
+        String[] urls  = url.split("/");
         try (BufferedInputStream load = new BufferedInputStream(new URL(url).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("loadedFile")) {
-            byte[] dataBuffer = new byte[speed];
+             FileOutputStream fileOutputStream = new FileOutputStream(urls[urls.length - 1])) {
+            byte[] dataBuffer = new byte[1024];
             int bytesRead;
-            Long startTime = System.currentTimeMillis();
             int sec = 0;
-            while ((bytesRead = load.read(dataBuffer, 0, speed)) != -1) {
+            long bytesWrite = 0L;
+            long deltaTime;
+            long startTime = System.currentTimeMillis();
+            while ((bytesRead = load.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
+                bytesWrite += 1024;
                 try {
-                    System.out.print("\r Loading: " + sec++ + " sec");
-                    Long inTime = System.currentTimeMillis();
-                    Thread.sleep(1000 - (inTime - startTime));
-                    startTime = inTime + 1000;
+                    if (bytesWrite >= speed) {
+                        deltaTime = System.currentTimeMillis() - startTime;
+                        if (deltaTime < 1000) {
+                            Thread.sleep(1000 - deltaTime);
+                            startTime += 1000;
+                        }
+                        bytesWrite = 0;
+                        System.out.print("\r Loading: " + ++sec + " sec");
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -47,24 +56,23 @@ public class Wget implements Runnable {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        try {
-            if (args[0].isEmpty()) {
-                System.out.println("Ввдеите ссылку на файл первым аргументом при запуске программы!");
-            }
-            if (args[1].isEmpty()) {
-                System.out.println("Ввдеите скорость скачивания в байтах вторым аргументом при запуске программы!");
-            }
-            String url = args[0];
-            int speed = Integer.parseInt(args[1]);
-            Thread wget = new Thread(new Wget(url, speed));
-            System.out.println("URL: " + url);
-            System.out.println("SPEED: " + speed + " byte");
-            wget.start();
-            wget.join();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Ввдеите необходимые аргументы 1.Ссылка на файл, 2.Скорость скаивания в байтах!");
-            System.out.println("Пример wget http://somefile 1024");
+    private static void validArgs(String[] args) {
+        if (args.length != 2) {
+            throw new IllegalArgumentException(
+                    "Ввдеите необходимые аргументы 1.Ссылка на файл, 2.Скорость скаивания в байтах! "
+                            + "Пример wget http://212.183.159.230/10MB.zip  1048576"
+            );
         }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        validArgs(args);
+        String url = args[0];
+        int speed = Integer.parseInt(args[1]);
+        Thread wget = new Thread(new Wget(url, speed));
+        System.out.println("URL: " + url);
+        System.out.println("SPEED: " + speed + " byte");
+        wget.start();
+        wget.join();
     }
 }
