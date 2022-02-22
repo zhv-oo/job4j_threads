@@ -42,10 +42,10 @@ public class Wget implements Runnable {
                         deltaTime = System.currentTimeMillis() - startTime;
                         if (deltaTime < 1000) {
                             Thread.sleep(1000 - deltaTime);
-                            startTime += 1000;
                         }
+                        startTime = System.currentTimeMillis();
                         bytesWrite = 0;
-                        System.out.print("\r Loading: " + ++sec + " sec");
+                        System.out.print("\r Loading: " + sec++ + " sec");
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
