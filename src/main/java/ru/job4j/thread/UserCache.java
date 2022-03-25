@@ -2,8 +2,10 @@ package ru.job4j.thread;
 /**
  * Класс без общих ресурсов при использовании кэша.
  */
+
 import net.jcip.annotations.NotThreadSafe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,9 +23,11 @@ public class UserCache {
         return User.of(users.get(id).getName());
     }
     /**
-     * Получаем не изменяемый общий список.
+     * Получаем List с копией элементов.
      */
     public List<User> findAll() {
-        return List.copyOf(users.values());
+        List<User> tmpList = new ArrayList<>();
+        users.values().forEach(u -> tmpList.add(User.of(u.getName())));
+        return tmpList;
     }
 }
