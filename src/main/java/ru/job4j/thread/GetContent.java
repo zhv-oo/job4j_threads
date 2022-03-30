@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class GetContent {
     public synchronized String getContent(Predicate<Integer> filter, File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file.getName()));
+        BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
         StringBuilder str = new StringBuilder();
         try (reader) {
             int data;

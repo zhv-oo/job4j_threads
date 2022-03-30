@@ -6,8 +6,9 @@ import java.io.*;
 
 public class SaveContent {
 
-    public synchronized void saveContent(String content, File file) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getName()))) {
+    public synchronized void saveContent(String content, File file) throws IOException {
+        BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(file));
+        try {
             for (int i = 0; i < content.length(); i += 1) {
                 writer.write(content.charAt(i));
             }
