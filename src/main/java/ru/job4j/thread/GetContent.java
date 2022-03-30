@@ -11,13 +11,13 @@ import java.util.function.Predicate;
 public class GetContent {
     public synchronized String getContent(Predicate<Integer> filter, File file) throws IOException {
         InputStream i = new FileInputStream(file);
-        String output = "";
+        StringBuilder str = new StringBuilder();
         int data;
         while ((data = i.read()) > 0) {
             if (filter.test(data)) {
-                output += (char) data;
+                str.append(data);
             }
         }
-        return output;
+        return str.toString();
     }
 }
