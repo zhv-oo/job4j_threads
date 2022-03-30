@@ -2,21 +2,22 @@ package ru.job4j.thread;
 /**
  * Класс получение контента из файла.
  */
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.function.Predicate;
 
 public class GetContent {
     public synchronized String getContent(Predicate<Integer> filter, File file) throws IOException {
-        InputStream i = new FileInputStream(file);
+        BufferedReader reader = new BufferedReader(new FileReader(file.getName()));
         StringBuilder str = new StringBuilder();
-        int data;
-        while ((data = i.read()) > 0) {
-            if (filter.test(data)) {
-                str.append(data);
+        try (reader) {
+            int data;
+            while ((data = reader.read()) > 0) {
+                if (filter.test(data)) {
+                    str.append(data);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return str.toString();
     }
