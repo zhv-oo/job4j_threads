@@ -6,10 +6,9 @@ import java.io.*;
 import java.util.function.Predicate;
 
 public class GetContent {
-    public synchronized String getContent(Predicate<Integer> filter, File file) throws IOException {
-        BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
+    public synchronized String getContent(Predicate<Integer> filter, File file) {
         StringBuilder str = new StringBuilder();
-        try (reader) {
+        try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file))) {
             int data;
             while ((data = reader.read()) > 0) {
                 if (filter.test(data)) {
