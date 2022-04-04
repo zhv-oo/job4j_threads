@@ -37,12 +37,8 @@ public class User {
         return amount;
     }
 
-    public void sendAmount(int coins) {
-        this.amount -= coins;
-    }
-
-    public void takeAmount(int coins) {
-        this.amount += coins;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public void setName(String name) {
