@@ -5,7 +5,6 @@ import net.jcip.annotations.ThreadSafe;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 /**
  * Коллеция в многопоточной среде.
  */
@@ -15,8 +14,7 @@ public class SingleLockList<T> implements Iterable<T> {
     private final List<T> list;
 
     public SingleLockList(List<T> list) {
-       this.list = list.stream()
-               .collect(Collectors.toList());
+       this.list = copy(list);
     }
 
     public synchronized void add(T value) {
