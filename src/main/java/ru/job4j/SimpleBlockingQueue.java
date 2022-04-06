@@ -17,36 +17,35 @@ public class SimpleBlockingQueue<T> {
     private final Queue<T> queue = new LinkedList<>();
 
     private final int size;
-    private int count = 0;
 
     public SimpleBlockingQueue(int size) {
         this.size = size;
     }
 
     public synchronized void offer(T value) {
-        if (count != 0) {
+        if (queue.size() == size) {
             check();
         }
-        count++;
         queue.offer(value);
         this.notifyAll();
     }
 
     public synchronized T poll() {
-        if (count != size) {
+        T rsl;
+        if (queue.size() == 0) {
             check();
         }
-        count--;
+        rsl = queue.poll();
         this.notifyAll();
-        return queue.poll();
+        return rsl;
     }
 
     private synchronized void check() {
-        while (count == size) {
+        while (queue.size() == size || queue.size() == 0) {
             try {
                 this.wait();
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                e.printStackTrace();
             }
         }
     }
