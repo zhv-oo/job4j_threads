@@ -22,31 +22,21 @@ public class SimpleBlockingQueue<T> {
         this.size = size;
     }
 
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         if (queue.size() == size) {
-            check();
+            this.wait();
         }
         queue.offer(value);
         this.notifyAll();
     }
 
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         T rsl;
         if (queue.size() == 0) {
-            check();
+            this.wait();
         }
         rsl = queue.poll();
         this.notifyAll();
         return rsl;
-    }
-
-    private synchronized void check() {
-        while (queue.size() == size || queue.size() == 0) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
