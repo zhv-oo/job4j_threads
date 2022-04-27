@@ -13,7 +13,10 @@ public class CASCount {
     }
 
     public void increment() {
-        this.count.compareAndSet(get(), get() + 1);
+        boolean rsl;
+        do {
+            rsl = this.count.compareAndSet(get(), get() + 1);
+        } while (!rsl);
     }
 
     public int get() {
