@@ -12,11 +12,11 @@ public class CASCount {
         count.getAndSet(0);
     }
 
-    public void increment() {
-        count.compareAndSet(get(), get() + 1);
+    public synchronized void increment() {
+        this.count.compareAndSet(get(), get() + 1);
     }
 
-    public int get() {
+    public synchronized int get() {
         return count.get();
     }
 }
