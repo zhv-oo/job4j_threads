@@ -18,19 +18,32 @@ public class CacheTest {
     public void whenUpdateTrue() {
         Cache cache = new Cache();
         Base base = new Base(1, 1);
+        Base baseTwo = new Base(1, 2);
         cache.add(base);
-        base.setName("newName");
-        assertTrue(cache.update(base));
-        assertThat(cache.get(1).getVersion(), is(2));
+        baseTwo.setName("newName");
+        cache.update(base);
+        assertTrue(cache.update(baseTwo));
+        assertThat(cache.get(1).getVersion(), is(3));
     }
 
     @Test
-    public void whenUpdateFalse() {
+    public void whenUpdateTrueWithOutChanges() {
         Cache cache = new Cache();
         Base base = new Base(1, 1);
         cache.add(base);
         cache.update(base);
-        assertFalse(cache.update(base));
+        assertTrue(cache.update(base));
+        assertTrue(cache.update(base));
+        assertThat(cache.get(1).getVersion(), is(4));
+    }
+
+    @Test (expected = OptimisticException.class)
+    public void whenUpdateWithException() {
+        Cache cache = new Cache();
+        Base base = new Base(1, 1);
+        Base baseTwo = new Base(1, 2);
+        cache.add(base);
+        assertFalse(cache.update(baseTwo));
     }
 
     @Test

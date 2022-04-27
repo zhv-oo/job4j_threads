@@ -11,14 +11,9 @@ public class Cache {
     }
 
     public boolean update(Base model) throws OptimisticException {
-        int modelVer = model.getVersion();
-        int memVersion = memory.get(model.getId()).getVersion();
-        if (modelVer != memVersion) {
-            throw new OptimisticException("Versions is not valid");
-        }
         return memory.computeIfPresent(
-                modelVer,
-                (m, b) -> m == memVersion ? b : model) == null;
+                model.getId(),
+                (id, mod) -> model.getVersion() == mod.getVersion() ? model.incVersion() : Cache.throwOptimisticException()) != null;
     }
 
     public void delete(Base model) {
@@ -27,5 +22,10 @@ public class Cache {
 
     public Base get(Integer id) {
         return memory.get(id);
+    }
+
+    @SuppressWarnings("checkstyle:LeftCurly")
+    private static <T> T throwOptimisticException() {
+        throw new OptimisticException("Version in not valid");
     }
 }
