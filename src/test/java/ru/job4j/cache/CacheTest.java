@@ -37,6 +37,15 @@ public class CacheTest {
         assertThat(cache.get(1).getVersion(), is(4));
     }
 
+    @Test
+    public void whenUpdateFalse() {
+        Cache cache = new Cache();
+        Base base = new Base(1, 1);
+        Base baseTwo = new Base(2, 2);
+        cache.add(base);
+        assertFalse(cache.update(baseTwo));
+    }
+
     @Test (expected = OptimisticException.class)
     public void whenUpdateWithException() {
         Cache cache = new Cache();
