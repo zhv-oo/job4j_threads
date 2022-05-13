@@ -12,17 +12,15 @@ public class ThreadPool {
 
     public ThreadPool() {
         for (int i = 0; i < size; i++) {
-            if (threads.get(i) != null && !threads.get(i).isInterrupted()) {
-                threads.add(new Thread(() -> {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        try {
-                            tasks.poll();
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
+            threads.add(new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        tasks.poll();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
-                }));
-            }
+                }
+            }));
         }
         threads.forEach(Thread::start);
     }
